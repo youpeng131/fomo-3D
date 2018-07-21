@@ -14,7 +14,7 @@ npm run build
 # 打包 --查看各模块
 npm run build --report  
 
-# 运行(端口号3000,文件在build/build-server.js)      
+# 运行(端口号3000,文件在server/index.js)      
 npm run server 或者 node server 
 ```
 
