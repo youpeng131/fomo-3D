@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const DIST = 'dist';
-const opn = require('opn');
+// const opn = require('opn');
 const app = express();
 const rp = require('request-promise');
 const mysql = require('mysql');
@@ -192,4 +192,4 @@ app.use((req, res) => {
 
 });
 app.listen(port);
-opn('http://localhost:' + port);
+// opn('http://localhost:' + port);
