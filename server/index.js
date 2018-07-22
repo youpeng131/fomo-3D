@@ -116,6 +116,31 @@ app.use('/api/player', (req, res) => {
 });
 
 
+// 接口
+app.use('/api/rank', (req, res) => {
+  let urls = [
+    'https://api.eosstud.com/rank'
+  ];
+
+  let options = {
+    uri: urls[0],
+    method: 'get',
+    timeout: 5000
+  };
+
+  rp(options).then((json) => {
+    console.log(json);
+    res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
+  }).catch((e) => {
+    console.log(e);
+  }).finally(() => {
+
+  });
+
+
+});
+
+
 
 // 存储用户
 app.use('/api/user', (req, res) => {
