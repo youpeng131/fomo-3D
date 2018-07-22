@@ -6,19 +6,19 @@
             <div class="numBox">
                 <span v-for="item in nums" :class="['num', 'num_' + item]"></span>
             </div>
-            <div class="time">{{time | format}}</div>
+            <div class="time">倒计时: {{dis_time | format}}</div>
         </div>
 
         <div class="main">
             <div class="main_l">
                 <div class="submit">
                     <div class="input-box">
-                        <input type="number" placeholder="请输入想要投入的KEY数量" />
-                        <p>单价: 0.50001</p>
+                        <input v-model="user_num" type="number" placeholder="请输入想要投入的KEY数量" />
+                        <p>单价: {{key_price}}</p>
                     </div>
                     <p class="price">
                         <span>KEY总价格:</span>
-                        <span>0.500001</span>
+                        <span>{{all_price}}</span>
                     </p>
                     <a href="javascript:;"></a>
                 </div>
@@ -28,11 +28,11 @@
 
                     <p class="produce produce1">
                         <span>距离结束所需时间</span>
-                        <span>33:33:33</span>
+                        <span>{{dis_time | format}}</span>
                     </p>
                     <p class="produce produce2">
                         <span>奖池当前累计资金</span>
-                        <span>133,333,333,33</span>
+                        <span>{{pots.join('')}}</span>
                     </p>
                     <div class="input-box input-box1">
                         <input type="text" />
@@ -40,7 +40,7 @@
                     </div>
                     <p class="detail">
                         <span><em>您目前拥有:</em><b>5</b><i class="key"></i></span>
-                        <span><em>可提现EOS:</em><b>5</b><i class="eos"></i></span>
+                        <span><em>可提现EOS:</em><b>{{balance}}</b><i class="eos"></i></span>
                     </p>
                     <div class="input-box input-box2">
                         <input type="number" />
@@ -64,17 +64,23 @@
     import dataFormat from '@/common/js/dataFormat'
     import axios from 'axios'
     import Clipboard from 'clipboard'
+    import { toDou } from '@/common/js/utils'
 
     export default {
         data() {
             return {
                 time: Date.now(),
-                num: 0
+                balance: 0,
+                pot: 0,
+                dis_time: 0,
+                end_time: 0,
+                key_price: 0,
+                user_num: null
             }
         },
         computed: {
             nums() {
-                var arr = (this.num + '').split('');
+                var arr = (this.balance + '').split('');
                 var arr2 = [];
                 let len = arr.length;
                 for(var i = 0; i < len; i++) {
@@ -84,43 +90,83 @@
                     }
                 }
                 return arr2;
+            },
+            pots() {
+                var arr = (this.pot + '').split('');
+                var arr2 = [];
+                let len = arr.length;
+                for(var i = 0; i < len; i++) {
+                    arr2.push(arr[i]);
+                    if((len-i-1)%3 === 0 && i !== len - 1) {
+                        arr2.push(',');
+                    }
+                }
+                return arr2;
+            },
+            all_price() {
+                let user_num = Number(this.user_num);
+                user_num = isNaN(user_num) ? 0 : user_num; 
+                return (this.key_price * user_num).toFixed(4);
             }
         },
         filters: {
-            format(time) {
-                return dataFormat(time, 'hh:mm:ss');
+            format(s) {
+                if (s > 0) {
+                    let h = s / 3600 | 0;
+                    s -= h * 3600;
+                    let m = s / 60 | 0;
+                    s -= m * 60 | 0;
+                    return toDou(h) + ':' + toDou(m) + ':' + toDou(s);
+                } else {
+                    return '00:00:00';
+                }
             }
         },
         mounted() {
             clearInterval(this.timer);
-            this.getTime();
-            this.getNum();
+            
+            this.getCounter();
             this.timer = setInterval(() => {
-                this.getTime();
-                this.getNum();
-            }, 1000);
+                this.getCounter();
+            }, 20000);
 
             this.$nextTick(() => {
                 this.copyLink();
             });
 
-          axios.get('/api/counter').then(res => {
-            console.log('get',res)
-          });
-          axios.get('/api/balance').then(res => {
-            console.log('post',res)
-          });
-          axios.get('/api/player').then(res => {
-            console.log('post',res)
-          })
-
         },
         methods: {
-            getTime() {
-                this.time = Date.now();
+            cutTime() {
+                clearInterval(this.cutTimer);
+                this.cutTimer = setInterval(() => {
+                    let dis_time = (this.end_time - Date.now()/1000) | 0;
+                    if (dis_time <= 0) {
+                        clearInterval(this.cutTimer);
+                    }
+                    this.dis_time = dis_time;
+                }, 1000);
             },
-            getNum() {
-                this.num += (Math.random() * 3000 | 0);
+            getCounter() {
+                axios.get('/api/counter').then(res => {
+                    let data = res.data;
+                    console.log(data)
+                    if (data.code == 0) {
+                        let { balance, end_time, key_price, pot } = data.data[0]
+                        this.balance = Math.round(balance / 10000);
+                        this.end_time = end_time;
+                        this.dis_time = (end_time - Date.now()/1000) | 0;
+                        this.key_price = (key_price / 10000).toFixed(4);
+                        this.pot = Math.round(pot / 10000);
+
+                        this.cutTime();
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: data.msg,
+                            type: 'error'
+                        });
+                    }
+                });
             },
             copyLink() {
                 var copy = new Clipboard(this.$refs.copy);
