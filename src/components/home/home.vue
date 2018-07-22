@@ -52,6 +52,7 @@
 
 <script type="text/ecmascript-6">
     import dataFormat from '@/common/js/dataFormat'
+    import axios from 'axios'
 
     export default {
         data() {
@@ -85,6 +86,14 @@
                 this.getTime();
                 this.getNum();
             }, 1000);
+
+            axios.get('/api/test').then(res => {
+                console.log('get',res)
+            })
+            axios.post('/api/test2',{a:1}).then(res => {
+                console.log('post',res)
+            })
+
         },
         methods: {
             getTime() {
