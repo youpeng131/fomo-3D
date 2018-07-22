@@ -6,11 +6,28 @@ const opn = require('opn');
 const app = express();
 const rp = require('request-promise');
 const mysql = require('mysql');
+const querystring = require('querystring');
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
 const port = 3000;
 app.use('/static', express.static(staticPath));
 // app.use('/favicon.icon', express.static(favicon));
+
+const connection = mysql.createConnection({
+  host     : '206.189.90.251',
+  user     : 'eosstud',
+  password : 'eos611eso',
+  database : 'eosstudDB',
+  port: 3306
+});
+
+connection.connect();
+
+
+connection.query('SELECT * from user_tb', function (error, results, fields) {
+  if (error) throw error;
+  console.log('The solution is: ', results[0]);
+});
 
 
 // 接口
@@ -95,6 +112,37 @@ app.use('/api/player', (req, res) => {
     // res.send({ 'msg': '', code: 0, data: [] });
   });
 
+
+});
+
+
+
+// 存储用户
+app.use('/api/user', (req, res) => {
+  var body = "";
+  req.on('data', function (chunk) {
+    body += chunk;
+  });
+  req.on('end', function () {
+    body = querystring.parse(body);
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
+    console.log(body);
+
+  var  addSql = 'INSERT INTO user_tb(account,invite_code,bind_time,var1,var2,var3) VALUES('+ body.account +','+ body.invite_code +','+ new Date() +', null,null,null)';
+  // var  addSqlParams = [body.account, body.invite_code, new Date(), null, null, null];
+  connection.query(addSql,function (err, result) {
+    if(err){
+      console.log('[INSERT ERROR] - ',err.message);
+      return;
+    }
+
+    console.log('--------------------------INSERT----------------------------');
+    //console.log('INSERT ID:',result.insertId);
+    console.log('INSERT ID:',result);
+    console.log('-----------------------------------------------------------------\n\n');
+  });
+    res.end(JSON.stringify({invite_account: 5}));
+  });
 
 });
 
