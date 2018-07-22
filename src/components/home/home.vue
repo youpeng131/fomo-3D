@@ -35,16 +35,16 @@
                         <span>{{pots.join('')}}</span>
                     </p>
                     <div class="input-box input-box1">
-                        <input type="text" />
-                        <a href="javascript:;"></a>
+                        <input v-model="username" placeholder="请输入用户名" type="text" />
+                        <a @click="search" href="javascript:;"></a>
                     </div>
                     <p class="detail">
-                        <span><em>您目前拥有:</em><b>5</b><i class="key"></i></span>
-                        <span><em>可提现EOS:</em><b>{{balance}}</b><i class="eos"></i></span>
+                        <span><em>您目前拥有:</em><b>{{user_keys}}</b><i class="key"></i></span>
+                        <span><em>可提现EOS:</em><b>{{user_balance}}</b><i class="eos"></i></span>
                     </p>
                     <div class="input-box input-box2">
-                        <input type="number" />
-                        <a href="javascript:;"></a>
+                        <input v-model="user_use" placeholder="请输入提现数量" type="number" />
+                        <a @click="use" href="javascript:;"></a>
                     </div>
                     <p class="other">注: 点击提现弹出提现所需合约地址和合约参数</p>
                 </div>
@@ -53,7 +53,7 @@
                     <div>
                         <span>邀请链接：www.wq2131235.com</span><a ref="copy" data-clipboard-text="www.wq2131235.com" href="javascript:;"></a>
                     </div>
-                    <span>已邀请: <i>5</i>位</span>
+                    <span>已邀请: <i>-</i>位</span>
                 </div>
             </div>
         </div>
@@ -75,7 +75,11 @@
                 dis_time: 0,
                 end_time: 0,
                 key_price: 0,
-                user_num: null
+                user_num: null,
+                username: '',
+                user_use: '',
+                allUser: [],
+                allPlayer: []
             }
         },
         computed: {
@@ -107,6 +111,29 @@
                 let user_num = Number(this.user_num);
                 user_num = isNaN(user_num) ? 0 : user_num; 
                 return (this.key_price * user_num).toFixed(4);
+            },
+            // 用户
+            user_balance() {
+                let allUser = this.allUser;
+                for(var i = 0; i < allUser.length; i++) {
+                    if (allUser[i].username == this.username) {
+                        let balance = allUser[i].balance / 10000;
+                        balance = balance == 0 ? balance : balance.toFixed(2);
+                        return balance;
+                    }
+                }
+                return 0
+            },
+            user_keys() {
+                let allPlayer = this.allPlayer;
+                for(var i = 0; i < allPlayer.length; i++) {
+                    if (allPlayer[i].player_name == this.username) {
+                        let keys = allPlayer[i].keys;
+                        keys = keys == 0 ? keys : Number(keys).toFixed(2);
+                        return keys;
+                    }
+                }
+                return 0
             }
         },
         filters: {
@@ -149,7 +176,6 @@
             getCounter() {
                 axios.get('/api/counter').then(res => {
                     let data = res.data;
-                    console.log(data)
                     if (data.code == 0) {
                         let { balance, end_time, key_price, pot } = data.data[0]
                         this.balance = Math.round(balance / 10000);
@@ -159,6 +185,67 @@
                         this.pot = Math.round(pot / 10000);
 
                         this.cutTime();
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: data.msg,
+                            type: 'error'
+                        });
+                    }
+                });
+            },
+            check() {
+                var username = this.username;
+                var re = /[^1-5a-z]/;
+                if (!username) {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入用户名'
+                    });
+                    return false
+                }
+                if (re.test(username) || username.length > 12) {
+                    this.$message({
+                        showClose: true,
+                        message: '用户名只能包含1-5,a-z小写,长度不能大于12位'
+                    });
+                    return false
+                }
+                return true
+            },
+            search() {
+                if (this.check() ) {
+                    this.getBalance();
+                    this.getPlayer();
+                }
+                
+            },
+            use() {
+                if (this.check() ) {
+                    // 
+                }
+            },
+            getBalance() {
+                axios.get('/api/balance').then(res => {
+                    let data = res.data;
+                    if (data.code == 0){
+                        this.allUser = data.data;
+
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: data.msg,
+                            type: 'error'
+                        });
+                    }
+                });
+            },
+            getPlayer() {
+                axios.get('/api/player').then(res => {
+                    let data = res.data;
+                    if (data.code == 0){
+                        this.allPlayer = data.data;
+
                     } else {
                         this.$message({
                             showClose: true,

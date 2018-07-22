@@ -66,24 +66,25 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
       // 接口
       app.use('/api/balance', (req, res) => {
-        let urls = [
-          'https://api.eosstud.com/balance'
-        ];
-
-        let options = {
-          uri: urls[0],
-          method: 'get',
-          timeout: 5000
-        };
-
-        rp(options).then((json) => {
-          console.log(json);
-          res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
-        }).catch((e) => {
-          console.log(e);
-        }).finally(() => {
-
-        });
+        
+        res.send({ 'msg': 'true', code: 0, data: [
+          {
+            balance: 0,
+            total: 22500,
+            username: "aaa"
+          },
+          {
+            balance: 6800,
+            total: 6800,
+            username: "bbb"
+          },
+          {
+            balance: 15750,
+            total: 64564,
+            username: "ccc"
+          }
+        ] });
+        
 
 
       });
@@ -91,25 +92,21 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
       // 接口
       app.use('/api/player', (req, res) => {
-        let urls = [
-          'https://api.eosstud.com/player'
-        ];
-
-        let options = {
-          uri: urls[0],
-          method: 'get',
-          timeout: 5000
-        };
-
-        rp(options).then((json) => {
-          console.log(json);
-          res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
-        }).catch((e) => {
-          console.log(e);
-        }).finally(() => {
-          // res.send({ 'msg': '', code: 0, data: [] });
-        });
-
+        
+        res.send({ 'msg': 'true', code: 0, data: [
+          {
+            keys: '6.8654',
+            player_name: 'aaa'
+          },
+          {
+            keys: '3.102',
+            player_name: 'bbb'
+          },
+          {
+            keys: '7.89',
+            player_name: 'ccc'
+          }
+        ] });
 
       });
     }
