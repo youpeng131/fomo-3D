@@ -51,7 +51,6 @@ app.use('/api/counter', (req, res) => {
     };
 
     rp(options).then((json) => {
-        console.log(json);
         res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
     }).catch((e) => {
         console.log(e);
@@ -76,7 +75,6 @@ app.use('/api/balance', (req, res) => {
     };
 
     rp(options).then((json) => {
-        console.log(json);
         res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
     }).catch((e) => {
         console.log(e);
@@ -101,7 +99,6 @@ app.use('/api/player', (req, res) => {
     };
 
     rp(options).then((json) => {
-        console.log(json);
         res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
     }).catch((e) => {
         console.log(e);
@@ -126,7 +123,6 @@ app.use('/api/rank', (req, res) => {
     };
 
     rp(options).then((json) => {
-        console.log(json);
         res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
     }).catch((e) => {
         console.log(e);
@@ -148,7 +144,6 @@ app.use('/api/user', (req, res) => {
     req.on('end', function () {
         body = querystring.parse(body);
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf8' });
-        console.log(body);
 
         var addSql = `INSERT INTO user_tb(account,invite_code,bind_time,var1,var2,var3) VALUES('${body.account}','${body.invite_code}','${moment().format('YYYY-MM-DD HH:mm:ss')}', null,null,null)`;
         connection.query(addSql, function (err, result) {
@@ -161,7 +156,6 @@ app.use('/api/user', (req, res) => {
             console.log('INSERT ID:', result);
             console.log('-----------------------------------------------------------------\n\n');
         });
-      res.write();
       res.end();
     });
 
@@ -171,11 +165,13 @@ app.use('/api/user', (req, res) => {
 // 查询被邀请人
 
 app.use('/api/invite_code', (req, res) => {
-  console.log(req.body);
-  // connection.query(`select count(*) from user_tb where invite_code = '${body.invite_code}'`, function (error, results, fields) {
-  // if (error) throw error;
-  // res.end(JSON.stringify({ code: 0, data: { invite_account: results[0].count } }));
+  const arr = req.url.split('=')[1];
+  connection.query(`select count(*) count from user_tb where invite_code = '${arr}'`, function (error, results, fields) {
+    if (error) throw error;
+    res.end(JSON.stringify({code: 0, data: {invite_account: results[0].count}}));
+  })
 });
+
 
 
 
