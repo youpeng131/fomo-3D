@@ -6,6 +6,7 @@ const opn = require('opn');
 const app = express();
 const rp = require('request-promise');
 const mysql = require('mysql');
+const querystring = require('querystring');
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
 const port = 3000;
@@ -111,6 +112,43 @@ app.use('/api/player', (req, res) => {
     // res.send({ 'msg': '', code: 0, data: [] });
   });
 
+
+});
+
+
+
+// 存储用户
+app.use('/api/user', (req, res) => {
+  var body = "";
+  req.on('data', function (chunk) {
+    console.log('----------------');
+    console.log(chunk);
+    console.log('----------------');
+
+    body += chunk;
+  });
+  req.on('end', function () {
+    body = querystring.parse(body);
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
+    console.log(body);
+
+  var  addSql = 'INSERT INTO user_tb(account,invite_code,bind_time,var1,var2,var3) VALUES('+ body.account +','+ body.invite_code +','+ new Date() +', null,null,null)';
+  // var  addSqlParams = [body.account, body.invite_code, new Date(), null, null, null];
+//增
+  connection.query(addSql,function (err, result) {
+    if(err){
+      console.log('[INSERT ERROR] - ',err.message);
+      return;
+    }
+
+    console.log('--------------------------INSERT----------------------------');
+    //console.log('INSERT ID:',result.insertId);
+    console.log('INSERT ID:',result);
+    console.log('-----------------------------------------------------------------\n\n');
+  });
+    res.write('ok');
+    res.end();
+  });
 
 });
 
