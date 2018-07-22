@@ -109,6 +109,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         ] });
 
       });
+
+      app.use('/api/rank', (req, res) => {
+        res.send({
+          'msg': 'true', code: 0, data: [
+            {"total": 8685, "amount": 35000, "keys": "6.99540555291353972", "player_name": "eosseosseoss"}, {"total": 1078, "amount": 16700, "keys": "3.33442308686418176", "player_name": "haydgnbyhege"}
+          ]
+        })
+      })
+
     }
   },
   plugins: [

@@ -15,14 +15,12 @@
                     <li>用户名</li>
                     <li>持有KEY个数</li>
                     <li>已投EOS数</li>
-                    <li>投资次数</li>
                     <li>已分红EOS数</li>
                 </ul>
                 <ul v-for="i in 10" class="tbody">
                     <li>名字</li>
                     <li>5</li>
                     <li>3</li>
-                    <li>5</li>
                     <li>0</li>
                 </ul>
             </div>

@@ -243,6 +243,7 @@
                 if (this.check() ) {
                     this.getBalance();
                     this.getPlayer();
+                    this.postUser();
                 }
                 
             },
