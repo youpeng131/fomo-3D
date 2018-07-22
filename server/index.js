@@ -39,9 +39,13 @@ app.use('/api/test', (req, res) => {
 
     rp(options).then((json) => {
         console.log(json);
+    }).catch((e) => {
+        console.log(e);
+    }).finally(() => {
+        res.send({ 'msg': '', code: 0, data: [] });
     });
 
-    res.send({ 'msg': '', code: 0, data: [] });
+
 });
 
 
