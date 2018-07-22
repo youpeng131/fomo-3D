@@ -287,7 +287,7 @@
             },
             getInvite() {
                 let invite_code = this.username;
-                axios.get('/api/user?invite_code=${invite_code}').then(res => {
+                axios.get(`/api/invite_code?invite_code=${invite_code}`).then(res => {
                     let data = res.data;
                     if (data.code == 0){
                         this.invite_account = data.data.invite_account;
