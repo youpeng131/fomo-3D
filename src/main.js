@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import Promise from 'promise-polyfill'
-import { Pagination } from 'element-ui'
+import { Pagination, Message } from 'element-ui'
 import Vue from 'vue'
 import App from '@/App'
 import router from '@/router'
@@ -14,6 +14,7 @@ if (!window.Promise) {
 Vue.config.productionTip = false
 Vue.component('p-header', PHeader);
 Vue.component(Pagination.name, Pagination);
+Vue.prototype.$message = Message;
 
 new Vue({
   el: '#app',

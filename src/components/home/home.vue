@@ -93,6 +93,8 @@
         },
         mounted() {
             clearInterval(this.timer);
+            this.getTime();
+            this.getNum();
             this.timer = setInterval(() => {
                 this.getTime();
                 this.getNum();
@@ -113,10 +115,18 @@
             copyLink() {
                 var copy = new Clipboard(this.$refs.copy);
                 copy.on('success',()=>{
-                    alert("邀请链接已复制");
+                    this.$message({
+                        showClose: true,
+                        message: "邀请链接已复制",
+                        type: 'success'
+                    });
                 });
                 copy.on('error',()=>{
-                    alert("复制失败，请手动复制");
+                    this.$message({
+                        showClose: true,
+                        message: "复制失败，请手动复制",
+                        type: 'error'
+                    });
                 });
             }
         }
