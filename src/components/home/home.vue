@@ -1,14 +1,14 @@
 <template>
     <div class="home">
         <p-header></p-header>
-        
+
         <div class="numWarp">
             <div class="numBox">
                 <span v-for="item in nums" :class="['num', 'num_' + item]"></span>
             </div>
             <div class="time">{{time | format}}</div>
         </div>
-        
+
         <div class="main">
             <div class="main_l">
                 <div class="submit">
@@ -24,27 +24,37 @@
                 </div>
             </div>
             <div class="main_r">
-                <p class="produce produce1">
-                    <span>距离结束所需时间</span>
-                    <span>33:33:33</span>
-                </p>
-                <p class="produce produce2">
-                    <span>奖池当前累计资金</span>
-                    <span>133,333,333,33</span>
-                </p>
-                <div class="input-box input-box1">
-                    <input type="text" />
-                    <a href="javascript:;"></a>
+                <div class="produce-box">
+
+                    <p class="produce produce1">
+                        <span>距离结束所需时间</span>
+                        <span>33:33:33</span>
+                    </p>
+                    <p class="produce produce2">
+                        <span>奖池当前累计资金</span>
+                        <span>133,333,333,33</span>
+                    </p>
+                    <div class="input-box input-box1">
+                        <input type="text" />
+                        <a href="javascript:;"></a>
+                    </div>
+                    <p class="detail">
+                        <span><em>您目前拥有:</em><b>5</b><i class="key"></i></span>
+                        <span><em>可提现EOS:</em><b>5</b><i class="eos"></i></span>
+                    </p>
+                    <div class="input-box input-box2">
+                        <input type="number" />
+                        <a href="javascript:;"></a>
+                    </div>
+                    <p class="other">注: 点击提现弹出提现所需合约地址和合约参数</p>
                 </div>
-                <p class="detail">
-                    <span>您目前拥有:<b>5</b><i class="key"></i></span>
-                    <span>可提现EOS:<b>5</b><i class="eos"></i></span>
-                </p>
-                <div class="input-box input-box2">
-                    <input type="number" />
-                    <a href="javascript:;"></a>
+
+                <div class="intervice">
+                    <div>
+                        <span>邀请链接：www.wq2131235.com</span><a ref="copy" data-clipboard-text="www.wq2131235.com" href="javascript:;"></a>
+                    </div>
+                    <span>已邀请: <i>5</i>位</span>
                 </div>
-                <p class="other">注: 点击提现弹出提现所需合约地址和合约参数</p>
             </div>
         </div>
     </div>
@@ -53,6 +63,7 @@
 <script type="text/ecmascript-6">
     import dataFormat from '@/common/js/dataFormat'
     import axios from 'axios'
+    import Clipboard from 'clipboard'
 
     export default {
         data() {
@@ -87,11 +98,8 @@
                 this.getNum();
             }, 1000);
 
-            axios.get('/api/test').then(res => {
-                console.log('get',res)
-            })
-            axios.post('/api/test2',{a:1}).then(res => {
-                console.log('post',res)
+            this.$nextTick(() => {
+                this.copyLink();
             })
 
         },
@@ -101,30 +109,53 @@
             },
             getNum() {
                 this.num += (Math.random() * 3000 | 0);
+            },
+            copyLink() {
+                var copy = new Clipboard(this.$refs.copy);
+                copy.on('success',()=>{
+                    alert("邀请链接已复制");
+                });
+                copy.on('error',()=>{
+                    alert("复制失败，请手动复制");
+                });
             }
         }
     }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-    .numWarp{
-        width: 958px;
-        height: 371px;
+    .home{
+        width: 1368px;
         margin: 0 auto;
-        background-image: url('./images/circle.png');
+    }
+
+    .numWarp{
+        height: 340px;
+        margin: 0 auto;
 
         .numBox{
-            padding-top: 100px;
+            padding-top: 50px;
             height: 110px;
             text-align: center;
             font-size: 0;
             .num{
+                position: relative;
                 display: inline-block;
                 width: 60px;
                 height: 80px;
                 background-image: url('./images/num.png');
                 background-repeat: no-repeat;
                 transition: 0.6s all;
+
+                &:after{
+                    content: "";
+                    display: block;
+                    width: 195px;
+                    height: 203px;
+                    margin-left: -66px;
+                    margin-top: -66px;
+                    background: url('./images/num_bg.png');
+                }
             }
             positions = 0 -80px -160px -240px -320px -400px -480px -560px -640px -720px -800px
             for position, i in positions{
@@ -140,17 +171,16 @@
             color: #d9b36f;
         }
     }
-    
+
     .main{
         display: flex;
         justify-content: space-between;
     }
     .main_l{
-        border: 1px solid #fff;
         width: 560px;
-        padding-bottom: 36px;
+
         .submit{
-            padding: 18px 48px 0 38px;
+            padding: 18px 48px 80px 38px;
 
             > a{
                 display: block;
@@ -175,7 +205,7 @@
                 width: 420px;
                 height: 60px;
                 font-size: 24px;
-                color: #fff;
+                color: #ffe011;
                 text-align: center;
                 background-color: #141210;
             }
@@ -206,7 +236,6 @@
     }
     .main_r{
         width: 731px;
-        padding: 0 21px;
         .produce{
             display: flex;
             height: 50px;
@@ -244,6 +273,7 @@
                 width: 560px;
                 height: 60px;
                 color: #fff;
+                font-size: 24px;
                 text-align: center;
                 background-color: #141210;
             }
@@ -278,24 +308,40 @@
             span{
                 display: block;
                 flex: 1;
+                display: flex;
+                align-items: center;
                 b{
+                    display: block;
                     font-size: 30px;
                     margin: 0 12px;
                     color: #ffe011;
                 }
+                em{
+                    display: block;
+                }
+
             }
-            .key{
-                display: inline-block;
+            .key, .eos{
+                display: block;
                 width: 26px;
                 height: 27px;
+            }
+            .key{
                 background-image: url('./images/key.png');
                 background-size: 100% 100%;
             }
             .eos{
-                display: inline-block;
-                width: 70px;
-                height: 78px;
-                background-image: url('./images/eos.png');
+                position: relative;
+                &:after{
+                    content: "";
+                    display: block;
+                    width: 70px;
+                    height: 78px;
+                    margin-top: -24px;
+                    margin-left: -25px;
+                    background-image: url('./images/eos.png');
+                }
+
             }
         }
         .other{
@@ -303,12 +349,48 @@
             line-height: 48px;
             font-size: 18px;
             color: #4f879a;
-            text-align: center; 
+            text-align: center;
+        }
+
+        .intervice{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            margin-top: 10px;
+            height: 50px;
+            color: #cbc2b9;
+            font-size: 18px;
+
+            > span{
+                display: block;
+            }
+            > div{
+                display: flex;
+            }
+            a{
+                margin-left: 10px;
+                display: block;
+                width: 72px;
+                height: 26px;
+                background-image: url('./images/copy.png');
+                &:hover{
+                    background-position: 0 -26px;
+                }
+                &:active{
+                    background-position: 0 -52px;
+                }
+            }
         }
 
     }
+    .produce-box{
+        padding: 0 21px;
+    }
+    .submit, .produce-box, .intervice{
+        background-color: #252526;
+    }
     .main_l, .main_r{
         border-top: 1px solid #d6c992;
-        background-color: #252526;
     }
 </style>
