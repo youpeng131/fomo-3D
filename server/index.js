@@ -10,7 +10,7 @@ const mysql = require('mysql');
 const querystring = require('querystring');
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
-const port = 3000;
+const port = 80;
 
 
 app.use('/static', express.static(staticPath));
