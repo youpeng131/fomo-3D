@@ -245,6 +245,7 @@
                 if (this.check() ) {
                     this.getBalance();
                     this.getPlayer();
+                    this.getInvite();
                     this.postUser();
                 }
                 
@@ -284,13 +285,9 @@
                     }
                 });
             },
-            postUser() {
-                let invite_code = cookies.getCookie('invite_code');
-                let account = this.username;
-                axios.post('/api/user', {
-                    account,
-                    invite_code
-                }).then(res => {
+            getInvite() {
+                let invite_code = this.username;
+                axios.get('/api/user?invite_code=${invite_code}').then(res => {
                     let data = res.data;
                     if (data.code == 0){
                         this.invite_account = data.data.invite_account;
@@ -301,6 +298,14 @@
                             type: 'error'
                         });
                     }
+                });
+            },
+            postUser() {
+                let invite_code = cookies.getCookie('invite_code');
+                let account = this.username;
+                axios.post('/api/user', {
+                    account,
+                    invite_code
                 });
             },
             copyLink() {
