@@ -38,10 +38,11 @@ app.use('/api/counter', (req, res) => {
 
   rp(options).then((json) => {
     console.log(json);
+    res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
   }).catch((e) => {
     console.log(e);
   }).finally(() => {
-    res.send({ 'msg': '', code: 0, data: [] });
+
   });
 
 
@@ -62,10 +63,11 @@ app.use('/api/balance', (req, res) => {
 
   rp(options).then((json) => {
     console.log(json);
+    res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
   }).catch((e) => {
     console.log(e);
   }).finally(() => {
-    res.send({ 'msg': '', code: 0, data: [] });
+
   });
 
 
@@ -86,10 +88,11 @@ app.use('/api/player', (req, res) => {
 
   rp(options).then((json) => {
     console.log(json);
+    res.send({ 'msg': 'true', code: 0, data: JSON.parse(json) });
   }).catch((e) => {
     console.log(e);
   }).finally(() => {
-    res.send({ 'msg': '', code: 0, data: [] });
+    // res.send({ 'msg': '', code: 0, data: [] });
   });
 
 

@@ -105,10 +105,10 @@
           axios.get('/api/counter').then(res => {
             console.log('get',res)
           });
-          axios.post('/api/balance',{a:1}).then(res => {
+          axios.get('/api/balance').then(res => {
             console.log('post',res)
           });
-          axios.post('/api/player',{a:1}).then(res => {
+          axios.get('/api/player').then(res => {
             console.log('post',res)
           })
 
