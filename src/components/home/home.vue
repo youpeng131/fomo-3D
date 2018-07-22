@@ -1,14 +1,14 @@
 <template>
     <div class="home">
         <p-header></p-header>
-        
+
         <div class="numWarp">
             <div class="numBox">
                 <span v-for="item in nums" :class="['num', 'num_' + item]"></span>
             </div>
             <div class="time">{{time | format}}</div>
         </div>
-        
+
         <div class="main">
             <div class="main_l">
                 <div class="submit">
@@ -25,7 +25,7 @@
             </div>
             <div class="main_r">
                 <div class="produce-box">
-                    
+
                     <p class="produce produce1">
                         <span>距离结束所需时间</span>
                         <span>33:33:33</span>
@@ -171,7 +171,7 @@
             color: #d9b36f;
         }
     }
-    
+
     .main{
         display: flex;
         justify-content: space-between;
@@ -341,7 +341,7 @@
                     margin-left: -25px;
                     background-image: url('./images/eos.png');
                 }
-                
+
             }
         }
         .other{
@@ -349,7 +349,7 @@
             line-height: 48px;
             font-size: 18px;
             color: #4f879a;
-            text-align: center; 
+            text-align: center;
         }
 
         .intervice{
