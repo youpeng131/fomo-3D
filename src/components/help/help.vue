@@ -24,6 +24,7 @@
                 </div>
             </div>
         </div>
+        <p-footer ref="footer"></p-footer>
     </div>
 </template>
 

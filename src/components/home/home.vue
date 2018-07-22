@@ -31,7 +31,7 @@
                         <span>{{pots.join('')}}</span>
                     </p>
                     <div class="input-box">
-                        <input v-model="username" placeholder="请输入用户名" type="text" />
+                        <input v-model="username" maxlength="12" placeholder="请输入用户名" type="text" />
                         <a @click="search" href="javascript:;"></a>
                     </div>
                     <div class="detail-box">
@@ -46,7 +46,7 @@
                 <div class="intervice">
                     <span>已邀请: <i>{{invite_account}}</i>位</span>
                     <div>
-                        <span>邀请链接：www.wq2131235.com</span><a ref="copy" :data-clipboard-text="invite_link" href="javascript:;"></a>
+                        <span>邀请链接: {{invite_link}}</span><a ref="copy" :data-clipboard-text="invite_link" href="javascript:;"></a>
                     </div>
                 </div>
             </div>
@@ -60,6 +60,8 @@
             <p>注：请勿从交易所往合约账户地址打币，交易所账户无法收取分红。</p>
             <a class="confirm"  @click="close" href="javascript:;"></a>
         </div>
+
+        <p-footer></p-footer>
     </div>
 </template>
 
@@ -166,7 +168,7 @@
             var invite_code = this.$route.params.id;
             if (invite_code) {
                 cookies.setCookie('invite_code', invite_code, 365);
-                this.$router.replace('/home/');
+                this.$router.replace('/fomo/');
             }
 
             clearInterval(this.timer);
@@ -230,10 +232,10 @@
                     });
                     return false
                 }
-                if (re.test(username) || username.length > 12) {
+                if (re.test(username) || username.length < 10 || username.length > 12) {
                     this.$message({
                         showClose: true,
-                        message: '用户名只能包含1-5,a-z小写,长度不能大于12位'
+                        message: '用户名只能包含1-5,a-z小写,长度不能小于10位大于12位'
                     });
                     return false
                 }
@@ -243,6 +245,7 @@
                 if (this.check() ) {
                     this.getBalance();
                     this.getPlayer();
+                    this.getInvite();
                     this.postUser();
                 }
                 
@@ -282,17 +285,12 @@
                     }
                 });
             },
-            postUser() {
-                let invite_code = cookies.getCookie('invite_code');
-                let account = this.username;
-                axios.post('/api/user', qs.stringify({
-                    account,
-                    invite_code
-                })).then(res => {
+            getInvite() {
+                let invite_code = this.username;
+                axios.get(`/api/invite_code?invite_code=${invite_code}`).then(res => {
                     let data = res.data;
                     if (data.code == 0){
                         this.invite_account = data.data.invite_account;
-
                     } else {
                         this.$message({
                             showClose: true,
@@ -300,6 +298,14 @@
                             type: 'error'
                         });
                     }
+                });
+            },
+            postUser() {
+                let invite_code = cookies.getCookie('invite_code');
+                let account = this.username;
+                axios.post('/api/user', {
+                    account,
+                    invite_code
                 });
             },
             copyLink() {
@@ -568,14 +574,16 @@
 
             > span{
                 display: block;
-                width: 320px;
+                // width: 280px;
                 text-align: right;
+                padding-left: 20px;
             }
             > div{
                 display: flex;
                 flex: 1;
                 justify-content: flex-end;
                 padding-right: 20px;
+                overflow: hidden;
             }
             a{
                 margin-left: 10px;

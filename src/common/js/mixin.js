@@ -12,10 +12,11 @@ export const heightMixin = {
     methods: {
         setHeight() {
             var t = this.$refs.header.$el.offsetHeight;
+            var b = this.$refs.footer.$el.offsetHeight;
             var H = document.documentElement.offsetHeight;
             var H2 = window.innerHeight;
             if (H < H2) {
-                this.$refs.main.style.height = H2 - t + 'px';
+                this.$refs.main.style.height = H2 - t - b + 'px';
             }
         }
     }

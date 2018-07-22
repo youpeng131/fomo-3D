@@ -11,11 +11,11 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/home/'
+            redirect: '/fomo/'
         },
         {
-            path: '/home/:id?',
-            name: 'home',
+            path: '/fomo/:id?',
+            name: 'fomo',
             component: Home
         },
         {
