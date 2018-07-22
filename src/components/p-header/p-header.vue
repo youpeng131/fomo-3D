@@ -18,11 +18,9 @@
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
     .p-header{
-        position: fixed;
-        top: 0;
-        left: 50%;
-        margin-left: -684px;
+        position: relative;
         width: 1368px;
+        margin: 0 auto;
         
         .logo{
             position: absolute;
@@ -43,6 +41,7 @@
                 cursor: pointer;
                 &:hover,&.router-link-active{
                     color: #d0c0b2;
+                    border-bottom: 2px solid #bcaf70;
                 }
             }
         }
