@@ -1,7 +1,7 @@
 <template>
     <div class="p-footer">
-        <a class="port" href="https://t.me/EOSTUD"></a>
-        <a class="github" href="https://github.com/eosstud/grab_the_bench"></a>
+        <a target="_blank" class="port" href="https://t.me/EOSTUD"></a>
+        <a target="_blank" class="github" href="https://github.com/eosstud/grab_the_bench"></a>
     </div>
 </template>
 
