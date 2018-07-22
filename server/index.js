@@ -12,6 +12,22 @@ const port = 3000;
 app.use('/static', express.static(staticPath));
 // app.use('/favicon.icon', express.static(favicon));
 
+const connection = mysql.createConnection({
+  host     : '206.189.90.251',
+  user     : 'eosstud',
+  password : 'eos611eso',
+  database : 'eosstudDB',
+  port: 3306
+});
+
+connection.connect();
+
+
+connection.query('SELECT * from user_tb', function (error, results, fields) {
+  if (error) throw error;
+  console.log('The solution is: ', results[0]);
+});
+
 
 // 接口
 app.use('/api/counter', (req, res) => {
