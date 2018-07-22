@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const api = require('../server/api');
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -44,11 +45,86 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     },
     before(app) {
-      app.get('/api/test',(req, res) => {
-        res.send({s:1})
+      // 接口
+      app.use('/api/counter', (req, res) => {
+        let urls = [
+          'https://api.eosstud.com/counter'
+        ];
+
+        let options = {
+          uri: urls[0],
+          method: 'get',
+          timeout: 5000
+          // headers: {
+          //     'Host': "maps.googleapis.com",
+          //     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          //     'Accept-Encoding': 'gzip, deflate, sdch, br',
+          //     'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,ja;q=0.4',
+          //     'Cache-Control': 'max-age=0',
+          //     'Upgrade-Insecure-Requests': '1',
+          //     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36',
+          //     'X-Client-Data': 'CJe2yQEIprbJAQjBtskB'
+
+          // }
+        };
+
+        rp(options).then((json) => {
+          console.log(json);
+        }).catch((e) => {
+          console.log(e);
+        }).finally(() => {
+          res.send({ 'msg': '', code: 0, data: [] });
+        });
+
+
       });
-      app.post('/api/test2',(req, res) => {
-        res.send({s:2})
+
+
+      // 接口
+      app.use('/api/balance', (req, res) => {
+        let urls = [
+          'https://api.eosstud.com/balance'
+        ];
+
+        let options = {
+          uri: urls[0],
+          method: 'get',
+          timeout: 5000
+        };
+
+        rp(options).then((json) => {
+          console.log(json);
+        }).catch((e) => {
+          console.log(e);
+        }).finally(() => {
+          res.send({ 'msg': '', code: 0, data: [] });
+        });
+
+
+      });
+
+
+      // 接口
+      app.use('/api/player', (req, res) => {
+        let urls = [
+          'https://api.eosstud.com/player'
+        ];
+
+        let options = {
+          uri: urls[0],
+          method: 'get',
+          timeout: 5000
+        };
+
+        rp(options).then((json) => {
+          console.log(json);
+        }).catch((e) => {
+          console.log(e);
+        }).finally(() => {
+          res.send({ 'msg': '', code: 0, data: [] });
+        });
+
+
       });
     }
   },
