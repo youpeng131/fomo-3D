@@ -12,8 +12,9 @@
     "server": "node server"
   },
   "dependencies": {
-    "mysql": "^2.16.0",
     "express": "^4.16.3",
+    "moment": "^2.22.2",
+    "mysql": "^2.16.0",
     "opn": "^5.3.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
