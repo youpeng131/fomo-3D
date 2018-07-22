@@ -1,7 +1,7 @@
 <template>
     <div class="rank">
-        <p-header></p-header>
-        <div class="rank-main">
+        <p-header ref="header"></p-header>
+        <div class="rank-main" ref="main">
             <ul class="rank-top">
                 <li @click="back" class="rank-back">&lt; 返回</li>
                 <li class="rank-p"><i></i>名字</li>
@@ -26,15 +26,34 @@
                     <li>0</li>
                 </ul>
             </div>
+            
+            <div class="page-warp">
+                <el-pagination :page-size="10"
+                    :pager-count="11"
+                    layout="prev, pager, next"
+                    @current-change="handleCurrentChange"
+                    :total="1000">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+    import { heightMixin } from '@/common/js/mixin'
     export default {
+        mixins: [heightMixin],
+        data() {
+            return {
+                pagerCount: 10
+            }
+        },
         methods: {
             back() {
                 this.$router.go(-1);
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
             }
         }
     }
@@ -46,7 +65,7 @@
         min-width: 1368px;
         background-color: rgba(0,0,0,0.8);
     }
-    .rank-top, .table{
+    .rank-top, .table, .page-warp{
         width: 1368px;
         margin: 0 auto;
     }
@@ -117,6 +136,41 @@
         border-bottom: 1px solid #493729;
         &:last-child{
             border-bottom: none;
+        }
+    }
+    
+</style>
+
+<style lang="stylus" rel="stylesheet/stylus">
+    .page-warp{
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 100px 45px;
+        box-sizing: border-box;
+        .el-pagination{
+            color: rgba(255,255,255,0.3);
+            .btn-next, .btn-prev{
+                background-color: transparent;
+                &:hover{
+                    color: #fff;
+                }
+            }
+            .el-icon-arrow-right,.el-icon-arrow-left{
+                font-size: 24px;
+            }
+            button{
+                &:disabled{
+                    background-color: transparent;
+                    color: rgba(255,255,255,0.3) !important;
+                }
+            }
+        }
+        .el-pager li{
+            background: transparent;
+            font-size: 24px;
+            &:hover,&.active{
+                color: #fff;
+            }
         }
     }
 </style>

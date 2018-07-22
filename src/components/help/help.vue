@@ -1,7 +1,7 @@
 <template>
     <div class="help">
         <p-header ref="header"></p-header>
-        <div class="help-main" ref="help">
+        <div class="help-main" ref="main">
             <ul class="help-top">
                 <li @click="back" class="help-back">&lt; 返回</li>
                 <li class="help-p">玩法介绍</li>
@@ -28,24 +28,12 @@
 </template>
 
 <script type="text/ecmascript-6">
-
+    import { heightMixin } from '@/common/js/mixin'
     export default {
-        mounted() {
-            this.$nextTick(() => {
-                this.setHeight();
-            })
-        },
+        mixins: [heightMixin],
         methods: {
             back() {
                 this.$router.go(-1);
-            },
-            setHeight() {
-                var t = this.$refs.header.$el.offsetHeight;
-                var H = document.documentElement.scrollHeight;
-                var H2 = window.innerHeight;
-                if (H < H2) {
-                    this.$refs.help.style.height = H2 - t + 'px';
-                } 
             }
         }
     }
