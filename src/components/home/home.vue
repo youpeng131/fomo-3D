@@ -18,7 +18,7 @@
                         <p>单价: {{key_price}}</p>
                     </div>
                     <p class="price">
-                        <span>KEY总价格:</span>
+                        <span>折合EOS预估价格:</span>
                         <span>{{all_price}}</span>
                     </p>
                     <a @click="show(0)" href="javascript:;"></a>
@@ -117,7 +117,7 @@
             },
             all_price() {
                 let user_num = Number(this.user_num);
-                user_num = isNaN(user_num) ? 0 : user_num; 
+                user_num = isNaN(user_num) ? 0 : user_num;
                 return (this.key_price * user_num).toFixed(4);
             },
             // 用户
@@ -164,7 +164,7 @@
             }
         },
         mounted() {
-            
+
             var invite_code = this.$route.params.id;
             if (invite_code) {
                 cookies.setCookie('invite_code', invite_code, 365);
@@ -172,7 +172,7 @@
             }
 
             clearInterval(this.timer);
-            
+
             this.getCounter();
             this.timer = setInterval(() => {
                 this.getCounter();
@@ -248,7 +248,7 @@
                     this.getInvite();
                     this.postUser();
                 }
-                
+
             },
             use() {
                 if (this.check() ) {
