@@ -3,10 +3,13 @@
 
 ``` bash
 # 下载依赖
-npm install
+npm install     
 
 # 开发
-npm run dev
+npm start 或者 npm run dev    
+
+# 如果运行出错，请重新执行  
+npm install 
 
 # 打包
 npm run build
