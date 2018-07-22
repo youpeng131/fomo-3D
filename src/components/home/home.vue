@@ -5,8 +5,9 @@
         <div class="numWarp">
             <div class="numBox">
                 <span v-for="item in nums" :class="['num', 'num_' + item]"></span>
+                <span class="eos"></span>
             </div>
-            <div class="time">倒计时: {{dis_time | format}}</div>
+            <div class="time">结束倒计时 {{dis_time | format}}</div>
         </div>
 
         <div class="main">
@@ -20,51 +21,54 @@
                         <span>KEY总价格:</span>
                         <span>{{all_price}}</span>
                     </p>
-                    <a href="javascript:;"></a>
+                    <a @click="show(0)" href="javascript:;"></a>
                 </div>
             </div>
             <div class="main_r">
                 <div class="produce-box">
-
-                    <p class="produce produce1">
-                        <span>距离结束所需时间</span>
-                        <span>{{dis_time | format}}</span>
-                    </p>
-                    <p class="produce produce2">
+                    <p class="produce">
                         <span>奖池当前累计资金</span>
                         <span>{{pots.join('')}}</span>
                     </p>
-                    <div class="input-box input-box1">
+                    <div class="input-box">
                         <input v-model="username" placeholder="请输入用户名" type="text" />
                         <a @click="search" href="javascript:;"></a>
                     </div>
-                    <p class="detail">
-                        <span><em>您目前拥有:</em><b>{{user_keys}}</b><i class="key"></i></span>
-                        <span><em>可提现EOS:</em><b>{{user_balance}}</b><i class="eos"></i></span>
-                    </p>
-                    <div class="input-box input-box2">
-                        <input v-model="user_use" placeholder="请输入提现数量" type="number" />
+                    <div class="detail-box">
+                        <div class="detail">
+                            <span><em>您目前拥有:</em><b>{{user_keys}}</b><i class="key"></i></span>
+                            <span><em>可提现EOS:</em><b>{{user_balance}}</b><i class="eos"></i></span>
+                        </div>
                         <a @click="use" href="javascript:;"></a>
                     </div>
-                    <p class="other">注: 点击提现弹出提现所需合约地址和合约参数</p>
                 </div>
 
                 <div class="intervice">
+                    <span>已邀请: <i>{{invite_account}}</i>位</span>
                     <div>
-                        <span>邀请链接：www.wq2131235.com</span><a ref="copy" data-clipboard-text="www.wq2131235.com" href="javascript:;"></a>
+                        <span>邀请链接：www.wq2131235.com</span><a ref="copy" :data-clipboard-text="invite_link" href="javascript:;"></a>
                     </div>
-                    <span>已邀请: <i>-</i>位</span>
                 </div>
             </div>
+        </div>
+
+        <div class="home_tip" v-show="showTip">
+            <a href="javascript:;" @click="close" class="close"></a>
+            <p v-if="tipStatus==0">钥匙总价格为当前时刻预估价格。<br/>确认投入请从个人钱包往合约账户地址打入相应数量的EOS。<br/>合约账户地址为：</p>
+            <p v-if="tipStatus==1">使用投入EOS所用的个人钱包往合约账户地址打入0.0001个EOS即可完成提现。<br/>合约账户地址为：</p>
+            <div>studcontract</div>
+            <p>注：请勿从交易所往合约账户地址打币，交易所账户无法收取分红。</p>
+            <a class="confirm"  @click="close" href="javascript:;"></a>
         </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import dataFormat from '@/common/js/dataFormat'
+    import qs from 'querystring'
     import axios from 'axios'
     import Clipboard from 'clipboard'
-    import { toDou } from '@/common/js/utils'
+    import { toDou, cookies } from '@/common/js/utils'
 
     export default {
         data() {
@@ -77,9 +81,11 @@
                 key_price: 0,
                 user_num: null,
                 username: '',
-                user_use: '',
                 allUser: [],
-                allPlayer: []
+                allPlayer: [],
+                showTip: false,
+                tipStatus: 0,
+                invite_account: 0
             }
         },
         computed: {
@@ -134,6 +140,12 @@
                     }
                 }
                 return 0
+            },
+            invite_link() {
+                var href = window.location.href;
+                var id = this.username;
+                var path = href.substr(href.length-1) == '/' ? '' : '/';
+                return href + path + id;
             }
         },
         filters: {
@@ -150,6 +162,13 @@
             }
         },
         mounted() {
+            
+            var invite_code = this.$route.params.id;
+            if (invite_code) {
+                cookies.setCookie('invite_code', invite_code, 365);
+                this.$router.replace('/home/');
+            }
+
             clearInterval(this.timer);
             
             this.getCounter();
@@ -163,6 +182,13 @@
 
         },
         methods: {
+            close() {
+                this.showTip = false;
+            },
+            show(status) {
+                this.showTip = true;
+                this.tipStatus = status;
+            },
             cutTime() {
                 clearInterval(this.cutTimer);
                 this.cutTimer = setInterval(() => {
@@ -222,7 +248,7 @@
             },
             use() {
                 if (this.check() ) {
-                    // 
+                    this.show(1)
                 }
             },
             getBalance() {
@@ -245,6 +271,26 @@
                     let data = res.data;
                     if (data.code == 0){
                         this.allPlayer = data.data;
+
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: data.msg,
+                            type: 'error'
+                        });
+                    }
+                });
+            },
+            postUser() {
+                let invite_code = cookies.getCookie('invite_code');
+                let account = this.username;
+                axios.post('/api/user', qs.stringify({
+                    account,
+                    invite_code
+                })).then(res => {
+                    let data = res.data;
+                    if (data.code == 0){
+                        this.invite_account = data.data.invite_account;
 
                     } else {
                         this.$message({
@@ -289,11 +335,18 @@
         .numBox{
             padding-top: 50px;
             height: 110px;
-            text-align: center;
-            font-size: 0;
+            display: flex;
+            justify-content: center;
+            .eos{
+                display: block;
+                width: 92px;
+                height: 110px;
+                background-image: url('./images/eos_b.png');
+                margin-top: -20px;
+            }
             .num{
                 position: relative;
-                display: inline-block;
+                display: block;
                 width: 60px;
                 height: 80px;
                 background-image: url('./images/num.png');
@@ -333,7 +386,7 @@
         width: 560px;
 
         .submit{
-            padding: 18px 48px 80px 38px;
+            padding: 18px 48px 10px 38px;
 
             > a{
                 display: block;
@@ -391,31 +444,20 @@
         width: 731px;
         .produce{
             display: flex;
-            height: 50px;
+            margin-bottom: 12px;
+            height: 88px;
             align-items: center;
             justify-content: space-between;
             span{
                 display: block;
                 &:nth-child(1){
-                    font-size: 22px;
+                    font-size: 32px;
                     color: #cbc2b9;
                 }
                 &:nth-child(2){
-                    font-size: 30px;
+                    font-size: 36px;
+                    color: #ffe011;
                 }
-            }
-        }
-        .produce1{
-            padding-bottom: 3px;
-            background: url('./images/line.png') no-repeat bottom center;
-            span:nth-child(2){
-                color: #d9b36f;
-            }
-        }
-        .produce2{
-            margin-bottom: 25px;
-            span:nth-child(2){
-                color: #ffe011;
             }
         }
         .input-box{
@@ -434,6 +476,7 @@
                 display: block;
                 width: 176px;
                 height: 72px;
+                background-image: url('./images/search.png');
                 &:hover{
                     background-position: 0 -72px;
                 }
@@ -442,20 +485,29 @@
                 }
             }
         }
-        .input-box1 a{
-            background-image: url('./images/search.png');
-        }
-        .input-box2 input{
-            color: #ffe011;
-        }
-        .input-box2 a{
-            background-image: url('./images/get.png');
+        .detail-box{
+            display: flex;
+            margin-top: 15px;
+            justify-content: space-between;
+            a{
+                display: block;
+                width: 176px;
+                height: 72px;
+                background-image: url('./images/get.png');
+                &:hover{
+                    background-position: 0 -72px;
+                }
+                &:active{
+                    background-position: 0 -144px;
+                }
+            }
         }
         .detail{
             display: flex;
             align-items: center;
             height: 60px;
-            font-size: 22px;
+            width: 560px;
+            font-size: 18px;
             color: #cbc2b9;
 
             span{
@@ -463,10 +515,11 @@
                 flex: 1;
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 b{
                     display: block;
-                    font-size: 30px;
-                    margin: 0 12px;
+                    font-size: 24px;
+                    margin: 0 30px;
                     color: #ffe011;
                 }
                 em{
@@ -498,8 +551,8 @@
             }
         }
         .other{
-            height: 48px;
-            line-height: 48px;
+            height: 58px;
+            line-height: 58px;
             font-size: 18px;
             color: #4f879a;
             text-align: center;
@@ -508,18 +561,20 @@
         .intervice{
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            margin-top: 10px;
             height: 50px;
             color: #cbc2b9;
             font-size: 18px;
 
             > span{
                 display: block;
+                width: 320px;
+                text-align: right;
             }
             > div{
                 display: flex;
+                flex: 1;
+                justify-content: flex-end;
+                padding-right: 20px;
             }
             a{
                 margin-left: 10px;
@@ -545,5 +600,58 @@
     }
     .main_l, .main_r{
         border-top: 1px solid #d6c992;
+    }
+
+    .home_tip{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-top: -200px;
+        margin-left: -435px;
+        width: 870px;
+        background-color: #252526;
+        box-sinzing: border-sizing;
+        padding: 78px 22px 22px;
+        p{
+            font-size: 24px;
+            color: #cbc2b9;
+        }
+        div{
+            font-size: 60px;
+            line-height: 110px;
+            color: #fff;
+            text-align: center;
+        }
+        p:last-of-type{
+            padding-left: 25px;
+        }
+        .close{
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: block;
+            width: 80px;
+            height: 80px;
+            background: url('./images/close.png') no-repeat center center;
+            transition: all 0.3s;
+            &:hover{
+                transform: rotate(90deg);
+            }
+        }
+        .confirm{
+            display: block;
+            width: 176px;
+            height: 72px;
+            margin: 30px auto 0;
+            background-image: url(./images/confirm2.png);
+
+            &:hover{
+                background-position: 0 -72px;
+            }
+            &:active{
+                background-position: 0 -144px;
+            }
+        }
+
     }
 </style>
