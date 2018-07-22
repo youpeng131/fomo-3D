@@ -306,9 +306,7 @@
                 axios.post('/api/user', qs.stringify({
                     account,
                     invite_code
-                }),headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                });
+                }));
             },
             copyLink() {
                 var copy = new Clipboard(this.$refs.copy);
