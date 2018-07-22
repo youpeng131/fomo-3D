@@ -4,7 +4,8 @@ const path = require('path');
 const DIST = 'dist';
 const opn = require('opn');
 const app = express();
-var rp = require('request-promise');
+const rp = require('request-promise');
+const mysql = require('mysql');
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
 const port = 3000;
@@ -13,17 +14,15 @@ app.use('/static', express.static(staticPath));
 
 
 // 接口
-app.use('/api/test', (req, res) => {
+app.use('/api/counter', (req, res) => {
   let urls = [
-    'https://api.eosstud.com/balance',
-    'https://api.eosstud.com/player',
     'https://api.eosstud.com/counter'
   ];
 
   let options = {
     uri: urls[0],
     method: 'get',
-    timeout: 5000,
+    timeout: 5000
     // headers: {
     //     'Host': "maps.googleapis.com",
     //     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -35,6 +34,54 @@ app.use('/api/test', (req, res) => {
     //     'X-Client-Data': 'CJe2yQEIprbJAQjBtskB'
 
     // }
+  };
+
+  rp(options).then((json) => {
+    console.log(json);
+  }).catch((e) => {
+    console.log(e);
+  }).finally(() => {
+    res.send({ 'msg': '', code: 0, data: [] });
+  });
+
+
+});
+
+
+// 接口
+app.use('/api/balance', (req, res) => {
+  let urls = [
+    'https://api.eosstud.com/balance'
+  ];
+
+  let options = {
+    uri: urls[0],
+    method: 'get',
+    timeout: 5000
+  };
+
+  rp(options).then((json) => {
+    console.log(json);
+  }).catch((e) => {
+    console.log(e);
+  }).finally(() => {
+    res.send({ 'msg': '', code: 0, data: [] });
+  });
+
+
+});
+
+
+// 接口
+app.use('/api/player', (req, res) => {
+  let urls = [
+    'https://api.eosstud.com/player'
+  ];
+
+  let options = {
+    uri: urls[0],
+    method: 'get',
+    timeout: 5000
   };
 
   rp(options).then((json) => {
