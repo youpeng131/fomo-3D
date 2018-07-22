@@ -153,9 +153,13 @@ app.use('/api/user', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
     console.log(body);
 
-  var  addSql = 'INSERT INTO user_tb(account,invite_code,bind_time,var1,var2,var3) VALUES('+ body.account +','+ body.invite_code +','+ new Date() +', null,null,null)';
+    var  addSql = 'INSERT INTO user_tb(account,invite_code,bind_time,var1,var2,var3) VALUES('+ body.account +','+ body.invite_code +','+ new Date().valueOf() +', null,null,null)';
   // var  addSqlParams = [body.account, body.invite_code, new Date(), null, null, null];
   connection.query(addSql,function (err, result) {
+    console.log('aaa');
+    console.log(result);
+    console.log('bbb');
+    console.log(err);
     if(err){
       console.log('[INSERT ERROR] - ',err.message);
       return;
@@ -166,7 +170,7 @@ app.use('/api/user', (req, res) => {
     console.log('INSERT ID:',result);
     console.log('-----------------------------------------------------------------\n\n');
   });
-    res.end(JSON.stringify({invite_account: 5}));
+    res.end(JSON.stringify({ code: 0 , data: { invite_account: 5} }));
   });
 
 });
