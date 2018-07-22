@@ -4,17 +4,31 @@ const path = require('path');
 const DIST = 'dist';
 const opn = require('opn');
 const app=express();
+const mysql = require('mysql');
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
 const port = 3000;
 app.use('/static', express.static(staticPath));
 // app.use('/favicon.icon', express.static(favicon));
 
+// const connection = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'root',
+//   password : '123456',
+//   database : 'test'
+// });
+//
+// connection.connect();
 
 // 接口
 app.use('/api/test', (req, res) => {
-    res.send({'msg': '', code: 0, data: []});
+  console.log(req);
+  res.send({'msg': '', code: 0, data: []});
 });
+
+
+
+
 
 
 
