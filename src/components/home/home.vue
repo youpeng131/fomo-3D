@@ -306,7 +306,7 @@
                 axios.post('/api/user', qs.stringify({
                     account,
                     invite_code
-                },headers: {
+                }),headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 });
             },
