@@ -303,9 +303,11 @@
             postUser() {
                 let invite_code = cookies.getCookie('invite_code');
                 let account = this.username;
-                axios.post('/api/user', {
+                axios.post('/api/user', qs.stringify({
                     account,
                     invite_code
+                },headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 });
             },
             copyLink() {
