@@ -8,6 +8,7 @@ const app = express();
 const rp = require('request-promise');
 const mysql = require('mysql');
 const querystring = require('querystring');
+console.log(__dirname);
 const staticPath = path.join(__dirname, '..', DIST, 'static');
 // const favicon = path.join(__dirname, '..', DIST, 'favicon.ico');
 const port = 3000;
