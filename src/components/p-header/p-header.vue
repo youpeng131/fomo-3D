@@ -1,7 +1,7 @@
 <template>
     <div class="p-header">
         <router-link class="logo" to="/">
-            <img src="~@/common/images/logo.png">
+            <img src="~@/common/images/logo2.png">
         </router-link>
         <ul class="nav">
             <router-link tag="li" to="/rank">持仓排行</router-link>
