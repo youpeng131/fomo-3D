@@ -1,7 +1,7 @@
 <template>
     <div class="p-header">
         <router-link class="logo" to="/">
-            <img src="~@/common/images/logo2.png">
+            <img src="~@/common/images/logo3.jpg" style="width: 70px;">
         </router-link>
         <ul class="nav">
             <router-link tag="li" to="/rank">持仓排行</router-link>
@@ -21,7 +21,7 @@
         position: relative;
         width: 1368px;
         margin: 0 auto;
-        
+
         .logo{
             position: absolute;
             top: 10px;
